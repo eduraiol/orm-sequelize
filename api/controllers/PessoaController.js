@@ -59,7 +59,7 @@ class PessoaController {
         }
     }
 
-    static async deletaPessoa(req, res){
+    static async deletaPessoa(req, res) {
         const { id } = req.params;
         try {
             await database.Pessoas.destroy({
@@ -67,9 +67,24 @@ class PessoaController {
                     id: Number(id)
                 }
             })
-            return res.status(200).json({mensagem: `id ${id} deletado!`});
+            return res.status(200).json({ mensagem: `id ${id} deletado!` });
         } catch (error) {
-            return res.status(500).json(error.message); 
+            return res.status(500).json(error.message);
+        }
+    }
+
+    static async restauraPessoa(req, res) {
+        const { id } = req.params
+
+        try {
+            await database.Pessoas.restore(
+                {
+                    where: { id: Number(id) }
+                }
+            )
+            return res.status(200).json({ mensagem: `id ${id} restaurado!`});
+        } catch (error) {
+            return res.status(500).json(error.message);
         }
     }
 
@@ -92,7 +107,7 @@ class PessoaController {
 
     static async criaMatricula(req, res) {
         const { estudanteId } = req.params;
-        const novaMatricula = { ...req.body, estudante_id: Number(estudanteId)};
+        const novaMatricula = { ...req.body, estudante_id: Number(estudanteId) };
         try {
             const novaMatriculaCriada = await database.Matriculas.create(novaMatricula);
             return res.status(200).json(novaMatricula);
@@ -124,18 +139,18 @@ class PessoaController {
         }
     }
 
-    static async deletaMatricula(req, res){
+    static async deletaMatricula(req, res) {
         const { estudanteId, matriculaId } = req.params;
         try {
             await database.Matriculas.destroy({
                 where: {
                     id: Number(matriculaId),
-                    estudante_id: estudanteId 
+                    estudante_id: estudanteId
                 }
             })
-            return res.status(200).json({mensagem: `id ${matriculaId} deletado!`});
+            return res.status(200).json({ mensagem: `id ${matriculaId} deletado!` });
         } catch (error) {
-            return res.status(500).json(error.message); 
+            return res.status(500).json(error.message);
         }
     }
 }
