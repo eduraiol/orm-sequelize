@@ -4,7 +4,7 @@ const {
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Pessoas extends Model {
-    
+
     static associate(models) {
       Pessoas.hasMany(models.Turmas, {
         foreignKey: 'docente_id'
@@ -22,6 +22,14 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     paranoid: true,
+    defaultScope:
+    {
+      where: { ativo: true }
+    },
+    scopes: 
+    {
+      todos: { where: {} }
+    },
     modelName: 'Pessoas',
   });
   return Pessoas;
