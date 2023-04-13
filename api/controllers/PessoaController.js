@@ -3,7 +3,7 @@ const database = require('../models');
 class PessoaController {
     static async pegaPessoasAtivas(req, res) {
         try {
-            const pessoasAtivas = await database.Pessoas.findAll();
+            const pessoasAtivas = await database.Pessoas.scope('ativas').findAll();
             return res.status(200).json(pessoasAtivas);
         } catch (error) {
             return res.status(500).json(error.message);
@@ -12,7 +12,7 @@ class PessoaController {
 
     static async pegaTodasAsPessoas(req, res) {
         try {
-            const todasAsPessoas = await database.Pessoas.scope('todos').findAll();
+            const todasAsPessoas = await database.Pessoas.findAll();
             return res.status(200).json(todasAsPessoas);
         } catch (error) {
             return res.status(500).json(error.message);
@@ -174,6 +174,24 @@ class PessoaController {
                 }
             )
             return res.status(200).json({ mensagem: `id ${id} restaurado!`});
+        } catch (error) {
+            return res.status(500).json(error.message);
+        }
+    }
+
+    static async pegaMatriculas(req, res) {
+        const { estudanteId } = req.params;
+        try {
+            const pessoa = await database.Pessoas.findOne(
+                {
+                    where: {
+                        id: Number(estudanteId)
+                    }
+                }
+            )
+            const matriculas = await pessoa.getAulasMatriculadas();
+
+            return res.status(200).json(matriculas);
         } catch (error) {
             return res.status(500).json(error.message);
         }
