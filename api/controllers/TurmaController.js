@@ -21,15 +21,6 @@ class TurmaController {
         }
     }
 
-    // {
-    //     where: {
-    //         data_inicio: {
-    //             [Op.gte]: data,
-    //             [Op.lte]: data
-    //         }
-    //     }
-    // }
-
     static async pegaUmaTurma(req, res) {
         const { id } = req.params;
         try {

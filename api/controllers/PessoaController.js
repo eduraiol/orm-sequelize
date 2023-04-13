@@ -96,23 +96,6 @@ class PessoaController {
         }
     }
 
-    static async pegaUmaMatricula(req, res) {
-        const { estudanteId, matriculaId } = req.params;
-        try {
-            const umaMatricula = await database.Matriculas.findOne(
-                {
-                    where: {
-                        id: Number(matriculaId),
-                        estudante_id: Number(estudanteId)
-                    }
-                }
-            )
-            return res.status(200).json(umaMatricula);
-        } catch (error) {
-            return res.status(500).json(error.message);
-        }
-    }
-
     static async criaMatricula(req, res) {
         const { estudanteId } = req.params;
         const novaMatricula = { ...req.body, estudante_id: Number(estudanteId) };
@@ -147,6 +130,41 @@ class PessoaController {
         }
     }
 
+    static async pegaMatriculas(req, res) {
+        const { estudanteId } = req.params;
+        try {
+            const pessoa = await database.Pessoas.findOne(
+                {
+                    where: {
+                        id: Number(estudanteId)
+                    }
+                }
+            )
+            const matriculas = await pessoa.getAulasMatriculadas();
+
+            return res.status(200).json(matriculas);
+        } catch (error) {
+            return res.status(500).json(error.message);
+        }
+    }
+
+    static async pegaUmaMatricula(req, res) {
+        const { estudanteId, matriculaId } = req.params;
+        try {
+            const umaMatricula = await database.Matriculas.findOne(
+                {
+                    where: {
+                        id: Number(matriculaId),
+                        estudante_id: Number(estudanteId)
+                    }
+                }
+            )
+            return res.status(200).json(umaMatricula);
+        } catch (error) {
+            return res.status(500).json(error.message);
+        }
+    }
+
     static async deletaMatricula(req, res) {
         const { estudanteId, matriculaId } = req.params;
         try {
@@ -173,25 +191,25 @@ class PessoaController {
                     }
                 }
             )
-            return res.status(200).json({ mensagem: `id ${id} restaurado!`});
+            return res.status(200).json({ mensagem: `id ${id} restaurado!` });
         } catch (error) {
             return res.status(500).json(error.message);
         }
     }
 
-    static async pegaMatriculas(req, res) {
-        const { estudanteId } = req.params;
+    static async pegaMatriculasPorTurma(req, res) {
+        const { turmaId } = req.params;
         try {
-            const pessoa = await database.Pessoas.findOne(
-                {
+            const todasAsMatriculas = await database.Matriculas
+                .findAndCountAll({
                     where: {
-                        id: Number(estudanteId)
-                    }
-                }
-            )
-            const matriculas = await pessoa.getAulasMatriculadas();
-
-            return res.status(200).json(matriculas);
+                        turma_id: Number(turmaId),
+                        status: 'Confirmado'
+                    },
+                    limit: 20,
+                    order: [['estudante_id', 'DESC']]
+                })
+            return res.status(200).json(todasAsMatriculas);
         } catch (error) {
             return res.status(500).json(error.message);
         }
