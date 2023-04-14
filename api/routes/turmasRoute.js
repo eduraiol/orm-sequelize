@@ -4,6 +4,7 @@ const TurmaController = require('../controllers/TurmaController');
 const router = Router();
 
 router
+    .get('/turmas', TurmaController.pegaTurmasPorData)
     .get('/turmas', TurmaController.pegaTodasAsTurmas)
     .get('/turmas/:id', TurmaController.pegaUmaTurma)
     .post('/turmas', TurmaController.criaTurma)
