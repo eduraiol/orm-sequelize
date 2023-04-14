@@ -1,26 +1,25 @@
-'use strict';
-/** @type {import('sequelize-cli').Migration} */
+'use strict'
 module.exports = {
-  async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Matriculas', {
+  up: (queryInterface, Sequelize) => {
+    return queryInterface.createTable('Turmas', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      status: {
-        type: Sequelize.STRING
-      },
-      estudante_id: {
+      docente_id: {
         allowNull: false,
         type: Sequelize.INTEGER,
-        references: { model: 'Pessoas', key: 'id' }
+        references: { model: 'Pessoas', key: 'id'}
       },
-      turma_id: {
+      data_inicio: {
+        type: Sequelize.DATEONLY
+      },
+      nivel_id: {
         allowNull: false,
         type: Sequelize.INTEGER,
-        references: { model: 'Turmas', key: 'id' }
+        references: { model: 'Niveis', key: 'id'}
       },
       createdAt: {
         allowNull: false,
@@ -30,9 +29,9 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       }
-    });
+    })
   },
-  async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Matriculas');
+  down: (queryInterface) => {
+    return queryInterface.dropTable('Turmas')
   }
-};
+}
